@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package main;
+
+import "google/protobuf/empty.proto";
+
+message MessageRequest {
+	string label = 1;
+}
+
+message MessageResponse {
+	string label = 1;
+	int64 created = 2;
+}
+
+message CheckResponse {
+  enum ServingStatus {
+    UNKNOWN = 0;
+    SERVING = 1;
+    NOT_SERVING = 2;
+  }
+  ServingStatus status = 1;
+}
+
+service MessageService {
+	rpc UpdateMessage (MessageRequest) returns (MessageResponse) {}
+	rpc CheckMessage (google.protobuf.Empty) returns (CheckResponse) {}
+}
+
+//on your root folder run `protoc --go_out=plugins=grpc:. message.proto`
+//on your root folder run closure -> not working `protoc --js_out=library=message.pb,binary:. message.proto`
+//on your root folder run commonjs `grpc_tools_node_protoc --js_out=import_style=commonjs,binary:. --grpc_out=. --plugin=protoc-gen-grpc=`which grpc_tools_node_protoc_plugin` message.proto`

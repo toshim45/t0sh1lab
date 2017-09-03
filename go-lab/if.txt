@@ -1,0 +1,3 @@
+BenchmarkConditional-4   	  200000	      7196 ns/op
+PASS
+ok  	github.com/toshim45/go-hello	1.522s
