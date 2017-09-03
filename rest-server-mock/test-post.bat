@@ -1,0 +1,1 @@
+curl -v -X POST -H "Content-Type:application/json" -d '{"key1":"value1","key2":{"key21":"value21"},"key3":["value31","value32"]}' http://localhost:8090/some-post

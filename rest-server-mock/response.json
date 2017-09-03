@@ -1,0 +1,14 @@
+{
+  "success": true,
+  "data": [
+    {
+		"id":99,
+      	"message":"greeting from jajak-1"
+    },
+	{
+		"id":191,
+      	"message":"greeting from jajak-2"
+    }
+	  ],
+	  "error": []
+}
