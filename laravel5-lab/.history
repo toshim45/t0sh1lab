@@ -1,0 +1,16 @@
+composer create-project laravel/laravel laravel5-learn --prefer-dist
+composer require barryvdh/laravel-ide-helper
+#Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+#php artisan clear-compiled
+#php artisan ide-helper:generate
+#php artisan optimize
+composer require laralib/l5scaffold --dev
+#Laralib\L5scaffold\GeneratorsServiceProvider::class,
+#php artisan make:scaffold Item --schema="name:string, amount:integer, active:boolean"
+#php artisan make:scaffold ItemLog --schema="action:string, item_id:integer"
+php artisan make:test ItemTest
+
+curl -i http://localhost/laravel5-learn/public/v1/items
+curl -i -X POST -H "Content-Type:application/json" -H "Accept:application/json" -d '{"name":"Macbook New", "amount":4, "active":0}' http://localhost/laravel5-learn/public/v1/items
+curl -i -X PUT -H "Content-Type:application/json" -H "Accept:application/json" -d '{"name":"Macbook New", "amount":8, "active":1}' http://localhost/laravel5-learn/public/v1/items/3
+curl -i -X DELETE http://localhost/laravel5-learn/public/v1/items/4
