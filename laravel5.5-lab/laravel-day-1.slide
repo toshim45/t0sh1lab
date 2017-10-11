@@ -1,0 +1,279 @@
+# Laravel Day 1
+
+
+# Who ?
+
+
+artikow@gmail.com   
+software engineer / s\*\*estock.id
+
+
+yank1609@gmail.com  
+software engineer / b\*\*alapak.com
+
+
+# Required
+- php 7
+- composer
+- npm
+- mysql
+- apache/nginx *at staging/production
+- Linux/Unix *preferred
+
+
+# Why Laravel?
+
+
+## 35k stars on github 
+
+
+*based on www.valuecoders.com*
+![laravel-usage-stat](https://www.valuecoders.com/blog/wp-content/uploads/2017/03/Laravel-Usage-Stats.png "laravel usage stat")
+
+
+## dependency/package management
+
+
+## its PHP, easy to learn, used by (almost) all company
+
+
+# Why NOT Laravel?
+
+
+- need some learning for different version
+- use lumen if API only no UI https://lumen.laravel.com
+- its PHP, interpreter, need this & that to perform as (almost) fast as compiled language
+- some startup I know not using Laravel, except OLX :)
+
+
+# Reference
+https://laravel.com/docs/5.5
+
+
+# Installation
+`composer create-project --prefer-dist laravel/laravel <project-name>`
+
+
+# Run
+`cd <project-name>`  
+`php artisan serve`  
+`php artisan serve --host=126.123.123.1`  
+
+
+# Local Development Environment
+
+
+## Homestead
+- pre-package vagrant (VM based) 
+- windows / linux
+
+
+## Valet
+- local php & mysql 
+- mac
+Note: baca deploy jg bro
+
+
+# Deployment
+
+## Apache/Nginx  
+- point document root to public folder
+- give write permission to storage & bootsrap/cache
+
+
+## more at day 4
+
+
+# Database
+
+
+## configuration
+`config/database.php`
+
+
+```
+'mysql' => [
+    'read' => [
+        'host' => '192.168.1.1',
+    ],
+    'write' => [
+        'host' => '196.168.1.2'
+    ],
+    'sticky'    => true,
+    'driver'    => 'mysql',
+    'database'  => 'database',
+    'username'  => 'root',
+    'password'  => '',
+    'charset' => 'utf8mb4',
+    'collation' => 'utf8mb4_unicode_ci',
+    'prefix'    => '',
+    'strict'	=> 'true',
+],
+```
+
+
+## laravel migration
+
+
+### create table
+`php artisan make:migration create_users_table --create=users`  
+
+### alter table
+`php artisan make:migration add_votes_to_users_table --table=users`  
+
+### migrate table
+`php artisan migrate`  
+
+
+```
+public function up()
+{
+          Schema::create('authors', function($t) {
+              // auto increment id (primary key)
+              $t->increments('id');
+
+              $t->string('name');
+              $t->integer('age')->nullable();
+              $t->boolean('active')->default(1);
+              $t->integer('role_id')->unsigned();
+              $t->text('bio');
+
+              // created_at, updated_at DATETIME
+              $t->timestamps();
+          });
+}
+```
+
+
+- `migrate:rollback`
+- `migrate:reset`
+- `migrate:refresh`
+
+
+## Import
+`use Illuminate\Support\Facades\DB`  
+`use App\<model-eloquent-name>`
+
+
+## Raw Queries
+`DB:select('select * from items where item_name=?',['item-1'])`
+
+## Fluent Query Builder
+`DB:table('items')->where('item_name','=','item-1')->get()`
+
+## Eloquent
+`App/Item:where()->get()`
+
+
+## Transaction
+```
+DB::transaction(function () {
+    DB::table('users')->update(['votes' => 1]);
+    DB::table('posts')->delete();
+});
+```
+
+
+# CRUD : Eloquent
+- VS repository pattern ?
+
+
+## routing
+`routes/web.php`
+
+
+### resources
+```
+GET | /items | index | items.index
+GET | /items/create | create | items.create
+POST | /items | store | items.store
+GET	| /items/{id} | show | items.show
+GET | /items/{id}/edit | edit | items.edit
+PUT | /items/{id} | update | items.update
+PATCH | /items/{id} | update | items.update
+DELETE | /items/{id} | destroy | items.destroy
+```
+
+
+## controllers
+`php artisan make:controller <controller-name> --resource`
+
+
+## models
+`php artisan make:model <model-name>`
+
+
+## CSRF
+```
+<form method="post" action="{{action('ProductController@update', $id)}}">
+        {{csrf_field()}}
+```
+
+### disable
+`app/Http/Kernel.php`
+- just for this training
+
+
+## GET
+- get all
+- get all with params
+- get detail item id
+
+```
+$model = Item::query();
+$email = $request->query('email');
+if (isset($email)) $model->where('email','=',$email);
+return $model->get();
+```
+```
+return Item::findOrFail($id); 
+```
+
+
+## POST / PUT / DELETE
+- write operations
+
+```
+$model = new Item;
+$model->id = $request->input('id');
+$model->email = $request->input('email');
+$model->amount = $request->input('amount');
+if(!$model->save()) {
+	throw new HttpResponseException(new JsonResponse(['persist FAIL'], Response::HTTP_INTERNAL_SERVER_ERROR));
+}
+```
+
+
+## Scaffolding
+
+### Laravel 5.5
+`https://github.com/kjdion84/turtle` 
+
+### Laravel 5.*
+`https://github.com/laracasts/Laravel-5-Generators-Extended`
+
+### Laravel 4.*
+`https://github.com/JeffreyWay/Laravel-4-Generators`
+
+# Questions?
+
+
+# Task
+- hello world
+- design order system table, use string for PK
+- migrate !!!
+- make crud operations
+
+
+# More Questions ?
+
+
+## Day-2 Hints
+- advanced eloquent 
+- packagist
+- best practices
+- etc...
+- please come tomorrow ^_^
+
+## Thanks
+
