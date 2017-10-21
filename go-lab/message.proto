@@ -4,6 +4,12 @@ package main;
 
 import "google/protobuf/empty.proto";
 
+enum ServingStatus {
+    UNKNOWN = 0;
+    SERVING = 1;
+    NOT_SERVING = 2;
+}
+
 message MessageRequest {
 	string label = 1;
 }
@@ -14,17 +20,17 @@ message MessageResponse {
 }
 
 message CheckResponse {
-  enum ServingStatus {
-    UNKNOWN = 0;
-    SERVING = 1;
-    NOT_SERVING = 2;
-  }
   ServingStatus status = 1;
+}
+
+message MapServingStatusResponse {
+  map<int32, string> status = 1;
 }
 
 service MessageService {
 	rpc UpdateMessage (MessageRequest) returns (MessageResponse) {}
 	rpc CheckMessage (google.protobuf.Empty) returns (CheckResponse) {}
+  rpc ListServingStatus (google.protobuf.Empty) returns (MapServingStatusResponse) {}
 }
 
 //on your root folder run `protoc --go_out=plugins=grpc:. message.proto`

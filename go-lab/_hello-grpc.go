@@ -25,7 +25,13 @@ func (ms *MessageService) UpdateMessage(ctx context.Context, req *MessageRequest
 
 func (ms *MessageService) CheckMessage(ctx context.Context, req *googlePb.Empty) (res *CheckResponse, err error) {
 	log.Printf("check\n")
-	return &CheckResponse{Status: CheckResponse_SERVING}, nil
+	return &CheckResponse{Status: ServingStatus_SERVING}, nil
+}
+
+func (ms *MessageService) ListServingStatus(ctx context.Context, req *googlePb.Empty) (res *MapServingStatusResponse, err error) {
+	return &MapServingStatusResponse{
+		Status: ServingStatus_name,
+	}, nil
 }
 
 func main() {
