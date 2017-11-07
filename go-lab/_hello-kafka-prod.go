@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/Shopify/sarama"
 )
@@ -9,7 +10,7 @@ import (
 var (
 	topic   string   = "test"
 	brokers []string = []string{"localhost:9092"}
-	msgText string   = "test-produce-3"
+	msgText string   = "test-produce-"
 )
 
 /*
@@ -50,7 +51,8 @@ func main() {
 	}
 	defer producer.AsyncClose()
 
-	messageInput := sarama.StringEncoder(msgText)
+	messageInput := sarama.StringEncoder(msgText + time.Now().String())
+	fmt.Printf("message %v\n", messageInput)
 	message := &sarama.ProducerMessage{
 		Topic: topic,
 		Value: messageInput,
