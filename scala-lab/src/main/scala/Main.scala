@@ -68,6 +68,11 @@ object Main extends App {
   }
   println(s"test-map-tuple ok > ${successItems}")
   println(s"test-map-tuple !ok > ${failedItems}")
+
+  val regionCode = "34.02.05.0001"
+  val codes = regionCode.split("\\.")
+  val districtRegionCode = codes.take(3).mkString(".")
+  println(s"district > $districtRegionCode")
 }
 
 
