@@ -21,15 +21,29 @@ class Trial {
     println(s"wrap bulk > ${ms.map( m => (wrapString(m.title), m.id.toString))}")
     println(s"ms diffs > ${diffMs.mkString(",")}")
     for {
-      fms <- getFutureList() map { messages =>
+      dfms <- getFutureList() map { messages =>
         val diffFms = messages.map(_.id).diff(mAllowed)
         if (diffFms.length != 0) {
           println(s"id ${diffFms.mkString(",")} not allowed")
         }
-        messages
+        diffFms
       }
     } yield {
-      println(s"fms-2 title > ${fms.map(_.title).mkString(",")}")
+      println(s"diff fms title > ${dfms.mkString(",")}")
+    }
+
+    for {
+      rfms <- getFutureList()
+      ffms <- getFutureListBySeq(rfms)
+    } yield {
+      println(s"forwarded fms title > ${ffms.map(_.title).mkString(",")}")
+    }
+
+    for {
+      rfms <- getFutureList()
+      ffms <- getFutureListByPointer(rfms:_*)
+    } yield {
+      println(s"forwarded pointer fms title > ${ffms.map(_.title).mkString(",")}")
     }
 
     val testMap = Map("test-1" -> 1, "test-2" -> 2)
@@ -62,11 +76,22 @@ class Trial {
     val codes = regionCode.split("\\.")
     val districtRegionCode = codes.take(3).mkString(".")
     println(s"district > $districtRegionCode")
+
+    val minValue = List(10, 91).min
+    println(s"min-value : $minValue")
   }
 
 
   def getFutureList(): Future[Seq[Message]] = Future {
     Seq(m1, m2, m3)
+  }
+
+  def getFutureListBySeq(raw:Seq[Message]): Future[Seq[Message]] = Future {
+    raw
+  }
+
+  def getFutureListByPointer(raw:Message*): Future[Seq[Message]] = Future {
+    raw
   }
 
   def getList(): Seq[Message] = Seq(m1, m2, m3)
