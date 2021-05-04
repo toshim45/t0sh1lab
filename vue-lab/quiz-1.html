@@ -31,22 +31,25 @@
 		<div id="app">
 			<div class="container">
 				<div class="row mt-5 mb-5">
-					<div class="col-md-12">
-					<!-- 
+					<!--
 					<div class="col-md-6 pull-left">
 						<button @click="newRound" class="btn btn-success">BARU</button>
 					</div>
-					 -->
-					<div class="col-md-3">
-						<i v-if="checkHasil" class="fas fa-smile fa-4x fa-spin" style="color:red"></i>
-						<i v-else class="fas fa-frown fa-4x"></i>
+					-->
+					<div class="col-md-4 pull-rigth">
+						<span v-for="p in pemains">
+						<i v-if="checkHasil && p.urut != giliran" class="fas fa-smile fa-4x fa-spin" v-bind:style="{color:p.warna}"></i>
+						<i v-else-if="p.urut != giliran" class="fas fa-frown fa-4x"></i>
+						<i v-else class="fas fa-frown fa-4x" v-bind:style="{color:p.warna}" @click="newRound"></i>
+						{{p.nilai}}
+						&nbsp;&nbsp;&nbsp;
+						</span>
 					</div>
 					<!--
 					<div class="col-md-2 pull-rigth">
 						<img src="fourze.gif" class="text-center" id="henshin" v-if="checkHasil" alt="fourze" width="30px"/>
 					</div>
-					 -->
-					</div>
+					-->
 				</div>
 				<div class="row">
 					<div class="col-md-12">
@@ -58,8 +61,7 @@
 							</div>
 							<div><input type="text" v-model="num2" size="2" class="form-control input-lg text-right" disabled="true"></div>
 							<div class="middle-icon"><i class="fas fa-equals fa-3x"></i></div>
-							<div><input ref="jwb" type="text" v-focus v-model="jawaban" placeholder="?" @change="checkHasil" size="2" maxlength="2"></div
->
+							<div><input ref="jwb" type="text" v-focus v-model="jawaban" placeholder="?" @change="checkHasil" size="2" maxlength="2"></div>
 						</div>
 					</div>
 				</div>
@@ -81,7 +83,12 @@
 				max: 10,
 				operator: '+',
 				jawaban: '',
-				pemain: [{},{}]
+				maxGiliran: 2,
+				giliran: 1,
+				pemains:[
+					{urut:1,warna:'blue',nilai:0},
+					{urut:2,warna:'red',nilai:0}
+				]
 			},
 			created: function(){
 				this.num1 = this.generateNumber()
@@ -123,12 +130,26 @@
 				operatorSum: function(){
 					return this.operator == '+'
 				},
-				checkHasil: function() {
+				checkHasil: function(urut) {
+					let hasil = false
+
 					if (this.operatorSum) {
-						return (this.num1 + this.num2) == this.jawaban	
+						hasil = (this.num1 + this.num2) == this.jawaban	
+					} else {
+						hasil = (this.num1 - this.num2) == this.jawaban
 					}
-					return (this.num1 - this.num2) == this.jawaban
+
+					// if (hasil) {
+					// 	this.pemains[this.giliran].nilai += 1
+					// }
 					
+
+					this.giliran += 1
+					if (this.giliran > this.maxGiliran) {
+						this.giliran = 1
+					}
+
+					return hasil
 				}
 			}
 		})

@@ -1,12 +1,12 @@
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class Message(var id: Int, var title: String)
+class Message(var id: Int, var title: String, var status: Boolean)
 
 class Trial {
-  val m1 = new Message(1, "satu")
-  val m2 = new Message(2, "dua")
-  val m3 = new Message(3, "tiga")
+  val m1 = new Message(1, "satu", true)
+  val m2 = new Message(2, "dua", true)
+  val m3 = new Message(3, "tiga", true)
   val mAllowed = List(1,2)
   val ms = getList()
   val diffFms = List()
@@ -79,6 +79,23 @@ class Trial {
 
     val minValue = List(10, 91).min
     println(s"min-value : $minValue")
+
+    val listtoMap = getList().map( i => i.id -> i.title).toMap
+    println(s"list to map: ${listtoMap}")
+
+    val isAllActiveResult = isAllActive(ms)
+    val isAllOneInactiveResult = isAllActive(ms :+ new Message(4, "empat", false))
+    println(s"isAllActive: ${isAllActiveResult} ${isAllOneInactiveResult}")
+
+    val isContainsInactiveResult = ms.exists( m => !m.status)
+    val isContainsTitleDuaResult = ms.exists( m => m.title=="dua")
+    println(s"isContainsResult: ${isContainsInactiveResult} ${isContainsTitleDuaResult}")
+
+
+    val m4 = new Message(1, "satu", true)
+    val duplicateMs = Seq(m1,m2,m3,m4)
+    val distinctMs = duplicateMs.groupBy(_.id).map(_._2.take(1)).flatten.toSeq
+    println(s"duplicateMs: ${distinctMs.map( m => m.title)}")
   }
 
 
@@ -98,4 +115,10 @@ class Trial {
 
 
   def wrapString(raw:String): String = Seq("p",raw).mkString("-")
+
+  def isAllActive(raw: Seq[Message]): Boolean =  {
+    raw.foldLeft(true){ case (status, msg) =>
+      status && msg.status
+    }
+  }
 }

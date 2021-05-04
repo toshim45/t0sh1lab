@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 INVALID_BIN_SHELF = "Format kode bin/rak salah"
 SHELF_NOT_EXIST = "Bin asal belum mempunyai rak"
 invalid_bin_test_case = dict(
@@ -11,3 +13,11 @@ bin_input = cases[1][0]
 expected_message = cases[1][1]
 
 print("test-name: {0} \nbin-input:{1} \nexpected-message:{2}\n".format(test_name, bin_input, expected_message))
+
+zones = defaultdict(dict)
+points = [(1,'A'),(2,'B'),(3,'A')]
+
+for i,p in enumerate(points):
+   zones[p[1]][p[0]]=p
+
+print('zones: ', zones)
