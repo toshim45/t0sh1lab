@@ -1,9 +1,9 @@
 # Hints
 
-## Create CA
+## Create CA (Won't need this if already have valid verified CA)
 `openssl genrsa -out ca.key 2048`
 
-## Create CA certificate
+## Create CA certificate OR get valid/verified CA from authorized agency
 `openssl req -new -x509 -key ca.key -out ca.crt`
 
 ## Create Server key
