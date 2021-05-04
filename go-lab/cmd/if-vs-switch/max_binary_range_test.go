@@ -19,9 +19,12 @@ var cases = []struct {
 	{145, 3},
 	{1665, 6},
 	{3332110, 7},
-	{2147483647, 0},
+	{2147483647, 0}, // max integer
 	{2000480007, 5},
+	{27264392281423, 3},
 }
+
+//101011000001000000000000010110101010000000010101101010101101110000001010101101000101000110010111000011111
 
 func calculateMaxRange(oneIdxs []int) (out int) {
 	rangeIdxs := make([]int, len(oneIdxs)-1)
@@ -133,16 +136,16 @@ func TestMaxBinaryRange(t *testing.T) {
 
 func BenchmarkMaxBinaryRangeNormal(b *testing.B) {
 	for n := 0; n < b.N; n++ {
-		normalMaxBinaryRange(2000480007)
+		normalMaxBinaryRange(27264392281423)
 	}
 }
 func BenchmarkMaxBinaryRangeMerge(b *testing.B) {
 	for n := 0; n < b.N; n++ {
-		mergeMaxBinaryRange(2000480007)
+		mergeMaxBinaryRange(27264392281423)
 	}
 }
 func BenchmarkMaxBinaryRangeDivideConquer(b *testing.B) {
 	for n := 0; n < b.N; n++ {
-		divideMaxBinaryRange(2000480007)
+		divideMaxBinaryRange(27264392281423)
 	}
 }
