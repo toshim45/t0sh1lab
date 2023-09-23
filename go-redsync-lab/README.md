@@ -1,0 +1,81 @@
+# REDSYNC TEST
+
+## RACE CONDITION
+
+```
+❯ go test -v -run TestRaceCondition -count=1
+=== RUN   TestRaceCondition
+2023/09/23 16:39:48 [START-INCR]
+2023/09/23 16:39:48 [END-INCR] 10
+    main_test.go:42: [PRINT] 10
+    main_test.go:42: [PRINT] 10
+    main_test.go:42: [PRINT] 10
+    main_test.go:42: [PRINT] 10
+    main_test.go:42: [PRINT] 10
+    main_test.go:42: [PRINT] 10
+    main_test.go:42: [PRINT] 10
+2023/09/23 16:39:48 [START-INCR]
+    main_test.go:42: [PRINT] 10
+    main_test.go:42: [PRINT] 10
+2023/09/23 16:39:48 [END-INCR] 20
+2023/09/23 16:39:48 [START-INCR]
+2023/09/23 16:39:48 [END-INCR] 30
+2023/09/23 16:39:48 [START-INCR]
+2023/09/23 16:39:48 [END-INCR] 40
+2023/09/23 16:39:48 [START-INCR]
+2023/09/23 16:39:48 [END-INCR] 50
+2023/09/23 16:39:48 [START-INCR]
+2023/09/23 16:39:48 [END-INCR] 60
+    main_test.go:42: [PRINT] 10  --> THIS IS BAD DATA
+2023/09/23 16:39:48 [START-INCR]
+2023/09/23 16:39:48 [END-INCR] 70
+2023/09/23 16:39:48 [START-INCR]
+2023/09/23 16:39:48 [END-INCR] 80
+2023/09/23 16:39:48 [START-INCR]
+2023/09/23 16:39:48 [END-INCR] 90
+2023/09/23 16:39:48 [START-INCR]
+2023/09/23 16:39:48 [END-INCR] 100
+--- PASS: TestRaceCondition (0.00s)
+PASS
+ok  	github.com/toshim45/redsync_test	0.801s
+```
+
+### ENABLE DISTRIBUTE LOCK
+
+```
+❯ go test -v -run TestRaceCondition -count=1
+=== RUN   TestRaceCondition
+2023/09/23 16:42:27 [START-INCR]
+2023/09/23 16:42:27 [START-INCR]
+2023/09/23 16:42:27 [START-INCR]
+2023/09/23 16:42:27 [START-INCR]
+2023/09/23 16:42:27 [START-INCR]
+2023/09/23 16:42:27 [START-INCR]
+2023/09/23 16:42:27 [START-INCR]
+2023/09/23 16:42:27 [START-INCR]
+2023/09/23 16:42:27 [START-INCR]
+2023/09/23 16:42:27 [START-INCR]
+    main_test.go:42: [PRINT] 0
+2023/09/23 16:42:27 [END-INCR] 10
+    main_test.go:42: [PRINT] 10
+    main_test.go:42: [PRINT] 10
+2023/09/23 16:42:27 [END-INCR] 20
+2023/09/23 16:42:27 [END-INCR] 30
+    main_test.go:42: [PRINT] 30
+2023/09/23 16:42:27 [END-INCR] 40
+    main_test.go:42: [PRINT] 40
+2023/09/23 16:42:27 [END-INCR] 50
+2023/09/23 16:42:27 [END-INCR] 60
+    main_test.go:42: [PRINT] 60
+2023/09/23 16:42:27 [END-INCR] 70
+    main_test.go:42: [PRINT] 70
+    main_test.go:42: [PRINT] 70
+    main_test.go:42: [PRINT] 70
+2023/09/23 16:42:27 [END-INCR] 80
+2023/09/23 16:42:27 [END-INCR] 90
+2023/09/23 16:42:27 [END-INCR] 100
+    main_test.go:42: [PRINT] 100
+--- PASS: TestRaceCondition (0.40s)
+PASS
+ok  	github.com/toshim45/redsync_test	1.311s
+```
