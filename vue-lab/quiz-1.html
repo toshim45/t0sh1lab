@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Game Shanum-1</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.1/css/all.min.css">
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+
+		<!-- jQuery library -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+		<!-- Popper JS -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+		<!-- Latest compiled JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+		<style type="text/css">
+			input[type="text"]
+			{
+			    font-size: 40px;
+			}
+			.middle-icon {
+			    font-size: 20px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="app">
+			<div class="container">
+				<div class="row mt-5 mb-5">
+					<!--
+					<div class="col-md-6 pull-left">
+						<button @click="newRound" class="btn btn-success">BARU</button>
+					</div>
+					-->
+					<div class="col-md-4 pull-rigth">
+						<span v-for="p in pemains">
+						<i v-if="checkHasil && p.urut != giliran" class="fas fa-smile fa-4x fa-spin" v-bind:style="{color:p.warna}"></i>
+						<i v-else-if="p.urut != giliran" class="fas fa-frown fa-4x"></i>
+						<i v-else class="fas fa-frown fa-4x" v-bind:style="{color:p.warna}" @click="newRound"></i>
+						{{p.nilai}}
+						&nbsp;&nbsp;&nbsp;
+						</span>
+					</div>
+					<!--
+					<div class="col-md-2 pull-rigth">
+						<img src="fourze.gif" class="text-center" id="henshin" v-if="checkHasil" alt="fourze" width="30px"/>
+					</div>
+					-->
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="form-inline">
+							<div><input type="text" v-model="num1" size="2" class="form-control input-lg text-right" disabled="true"></div>
+							<div class="text-center middle-icon">
+								<i v-if="operatorSum" class="fa fa-plus fa-3x"></i>
+								<i v-else class="fa fa-minus fa-3x"></i>
+							</div>
+							<div><input type="text" v-model="num2" size="2" class="form-control input-lg text-right" disabled="true"></div>
+							<div class="middle-icon"><i class="fas fa-equals fa-3x"></i></div>
+							<div><input ref="jwb" type="text" v-focus v-model="jawaban" placeholder="?" @change="checkHasil" size="2" maxlength="2"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+		// Register a global custom directive called `v-focus`
+		Vue.directive('focus', {
+		  // When the bound element is inserted into the DOM...
+		  inserted: function (el) {
+		    // Focus the element
+		    el.focus()
+		  }
+		})
+		var app = new Vue({
+			el: '#app',
+			data: {
+				min: 1,
+				max: 10,
+				operator: '+',
+				jawaban: '',
+				maxGiliran: 2,
+				giliran: 1,
+				pemains:[
+					{urut:1,warna:'blue',nilai:0},
+					{urut:2,warna:'red',nilai:0}
+				]
+			},
+			created: function(){
+				this.num1 = this.generateNumber()
+				this.num2 = this.generateNumber()
+				this.operator = this.generateOperator()
+				if (this.operator == '-' && this.num1 < this.num2) {
+					let numTemp = this.num1
+					this.num1 = this.num2
+					this.num2 = numTemp
+				}
+			},
+			methods:{
+				generateNumber: function() {
+					return Math.floor(Math.random()*(this.max-this.min+1)+this.min)
+				},
+				generateOperator: function() {
+					let num = Math.floor(Math.random()*2)
+					if (num == 1) {
+						return '+'
+					} else {
+						return '-'
+					}
+				},
+				newRound: function(){
+					this.num1 = this.generateNumber()
+					this.num2 = this.generateNumber()
+					this.operator = this.generateOperator()
+					this.jawaban = ''
+					if (this.operator == '-' && this.num1 < this.num2) {
+						let numTemp = this.num1
+						this.num1 = this.num2
+						this.num2 = numTemp
+					}
+					app.$forceUpdate()
+					this.$refs.jwb.focus()
+				}
+			},
+			computed:{
+				operatorSum: function(){
+					return this.operator == '+'
+				},
+				checkHasil: function(urut) {
+					let hasil = false
+
+					if (this.operatorSum) {
+						hasil = (this.num1 + this.num2) == this.jawaban	
+					} else {
+						hasil = (this.num1 - this.num2) == this.jawaban
+					}
+
+					// if (hasil) {
+					// 	this.pemains[this.giliran].nilai += 1
+					// }
+					
+
+					this.giliran += 1
+					if (this.giliran > this.maxGiliran) {
+						this.giliran = 1
+					}
+
+					return hasil
+				}
+			}
+		})
+		</script>
+	</body>
+</html>

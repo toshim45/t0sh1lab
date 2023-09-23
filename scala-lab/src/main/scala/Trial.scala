@@ -1,12 +1,12 @@
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class Message(var id: Int, var title: String)
+class Message(var id: Int, var title: String, var status: Boolean)
 
 class Trial {
-  val m1 = new Message(1, "satu")
-  val m2 = new Message(2, "dua")
-  val m3 = new Message(3, "tiga")
+  val m1 = new Message(1, "satu", true)
+  val m2 = new Message(2, "dua", true)
+  val m3 = new Message(3, "tiga", true)
   val mAllowed = List(1,2)
   val ms = getList()
   val diffFms = List()
@@ -21,15 +21,29 @@ class Trial {
     println(s"wrap bulk > ${ms.map( m => (wrapString(m.title), m.id.toString))}")
     println(s"ms diffs > ${diffMs.mkString(",")}")
     for {
-      fms <- getFutureList() map { messages =>
+      dfms <- getFutureList() map { messages =>
         val diffFms = messages.map(_.id).diff(mAllowed)
         if (diffFms.length != 0) {
           println(s"id ${diffFms.mkString(",")} not allowed")
         }
-        messages
+        diffFms
       }
     } yield {
-      println(s"fms-2 title > ${fms.map(_.title).mkString(",")}")
+      println(s"diff fms title > ${dfms.mkString(",")}")
+    }
+
+    for {
+      rfms <- getFutureList()
+      ffms <- getFutureListBySeq(rfms)
+    } yield {
+      println(s"forwarded fms title > ${ffms.map(_.title).mkString(",")}")
+    }
+
+    for {
+      rfms <- getFutureList()
+      ffms <- getFutureListByPointer(rfms:_*)
+    } yield {
+      println(s"forwarded pointer fms title > ${ffms.map(_.title).mkString(",")}")
     }
 
     val testMap = Map("test-1" -> 1, "test-2" -> 2)
@@ -62,6 +76,26 @@ class Trial {
     val codes = regionCode.split("\\.")
     val districtRegionCode = codes.take(3).mkString(".")
     println(s"district > $districtRegionCode")
+
+    val minValue = List(10, 91).min
+    println(s"min-value : $minValue")
+
+    val listtoMap = getList().map( i => i.id -> i.title).toMap
+    println(s"list to map: ${listtoMap}")
+
+    val isAllActiveResult = isAllActive(ms)
+    val isAllOneInactiveResult = isAllActive(ms :+ new Message(4, "empat", false))
+    println(s"isAllActive: ${isAllActiveResult} ${isAllOneInactiveResult}")
+
+    val isContainsInactiveResult = ms.exists( m => !m.status)
+    val isContainsTitleDuaResult = ms.exists( m => m.title=="dua")
+    println(s"isContainsResult: ${isContainsInactiveResult} ${isContainsTitleDuaResult}")
+
+
+    val m4 = new Message(1, "satu", true)
+    val duplicateMs = Seq(m1,m2,m3,m4)
+    val distinctMs = duplicateMs.groupBy(_.id).map(_._2.take(1)).flatten.toSeq
+    println(s"duplicateMs: ${distinctMs.map( m => m.title)}")
   }
 
 
@@ -69,8 +103,22 @@ class Trial {
     Seq(m1, m2, m3)
   }
 
+  def getFutureListBySeq(raw:Seq[Message]): Future[Seq[Message]] = Future {
+    raw
+  }
+
+  def getFutureListByPointer(raw:Message*): Future[Seq[Message]] = Future {
+    raw
+  }
+
   def getList(): Seq[Message] = Seq(m1, m2, m3)
 
 
   def wrapString(raw:String): String = Seq("p",raw).mkString("-")
+
+  def isAllActive(raw: Seq[Message]): Boolean =  {
+    raw.foldLeft(true){ case (status, msg) =>
+      status && msg.status
+    }
+  }
 }
