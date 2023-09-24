@@ -1,0 +1,4 @@
+DATABASE_URL=postgresql://<user>:<password>@<host>:<port>/hasura
+REPLICA_DATABASE_URL=postgresql://<user>:<password>@replica-<host>:<port>/hasura
+DELAY=25ms
+WORK_ID=73ba4011-54c9-403c-a05e-fbb4f36b1fd0
