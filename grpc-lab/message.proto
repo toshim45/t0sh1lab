@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package main;
 
+option go_package = "./messaging";
+
 import "google/protobuf/empty.proto";
 
 enum ServingStatus {
@@ -32,7 +34,3 @@ service MessageService {
 	rpc CheckMessage (google.protobuf.Empty) returns (CheckResponse) {}
   rpc ListServingStatus (google.protobuf.Empty) returns (MapServingStatusResponse) {}
 }
-
-//on your root folder run `protoc --go_out=plugins=grpc:. message.proto`
-//on your root folder run closure -> not working `protoc --js_out=library=message.pb,binary:. message.proto`
-//on your root folder run commonjs `grpc_tools_node_protoc --js_out=import_style=commonjs,binary:. --grpc_out=. --plugin=protoc-gen-grpc=`which grpc_tools_node_protoc_plugin` message.proto`
