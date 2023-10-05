@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package messaging;
+package messagingv1;
 
-option go_package = "./messaging";
+option go_package = "./messagingv1";
 
 import "google/protobuf/empty.proto";
 
@@ -13,7 +13,7 @@ enum ServingStatus {
 }
 
 message MessageRequest {
-	string label = 1;
+	int64 label = 1;
 }
 
 message MessageResponse {
