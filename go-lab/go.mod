@@ -14,7 +14,7 @@ require (
 	github.com/onsi/gomega v1.11.0 // indirect
 	github.com/satori/go.uuid v1.2.0
 	github.com/urfave/cli v1.22.5
-	golang.org/x/net v0.17.0 // indirect
+	golang.org/x/net v0.23.0 // indirect
 	gopkg.in/guregu/null.v3 v3.5.0
 	gopkg.in/redis.v5 v5.2.9
 )
