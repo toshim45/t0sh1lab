@@ -6,7 +6,18 @@ import (
 )
 
 func main() {
-	log.Println("[main] hi!")
+	fanIn()
+	fanOut()
+}
+
+func fanOut() {
+	log.Println("[fanOut] hi!")
+	// inputList := []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
+	log.Println("[fanOut] bye")
+}
+
+func fanIn() {
+	log.Println("[fanIn] hi!")
 	inputList := []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
 	outputList := []int{}
 
@@ -19,7 +30,7 @@ func main() {
 	wg.Add(inputLen)
 
 	for _, i := range inputList {
-		go worker(i, outChan, &wg)
+		go multiplyByTwo(i, outChan, &wg)
 	}
 
 	wg.Wait()
@@ -31,13 +42,14 @@ func main() {
 		outputList = append(outputList, oc)
 	}
 
-	log.Print("[main] out: ", outputList)
-	log.Println("[main] bye")
+	log.Print("[fanIn] out: ", outputList)
+	log.Println("[fanIn] bye")
 }
 
-func worker(in int, outChan chan<- int, wg *sync.WaitGroup) {
+/** worker: multiply by 2 **/
+func multiplyByTwo(in int, outChan chan<- int, wg *sync.WaitGroup) {
 	out := 2 * in
-	log.Println("[worker]", in, "=>", out)
+	log.Println("[multiplyByTwo]", in, "=>", out)
 
 	outChan <- out
 
